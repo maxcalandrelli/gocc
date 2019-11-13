@@ -18,18 +18,16 @@ import (
 	"fmt"
 	"sort"
 	"strings"
-
-	"github.com/maxcalandrelli/gocc/internal/ast"
 )
 
 /*
 key: symbol string
 */
-type SymbolSet map[ast.SyntaxSymbol]struct{}
+type SymbolSet map[string]bool
 
 func (this SymbolSet) AddSet(that SymbolSet) {
 	for id := range that {
-		this[id] = struct{}{}
+		this[id] = true
 	}
 }
 
@@ -50,7 +48,7 @@ func (this SymbolSet) String() string {
 	fmt.Fprintf(buf, "{\n")
 	var keys []string
 	for key := range this {
-		keys = append(keys, key.SymbolName())
+		keys = append(keys, key)
 	}
 	sort.Strings(keys)
 	for _, str := range keys {

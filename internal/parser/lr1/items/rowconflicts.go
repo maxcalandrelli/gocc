@@ -15,12 +15,11 @@
 package items
 
 import (
-	"github.com/maxcalandrelli/gocc/internal/ast"
-	"github.com/maxcalandrelli/gocc/internal/parser/lr1/action"
+	"github.com/goccmack/gocc/internal/parser/lr1/action"
 )
 
 /*
 key: symbol
 value: list of actions
 */
-type RowConflicts map[ast.SyntaxSymbol][]action.Action
+type RowConflicts map[string][]action.Action

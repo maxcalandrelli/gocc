@@ -14,31 +14,20 @@
 
 package ast
 
-type SyntaxTokId struct {
-	string
-	StdSyntaxSymbol
-}
+import (
+	"github.com/goccmack/gocc/internal/frontend/token"
+)
+
+type SyntaxTokId string
 
 func NewTokId(tokId interface{}) (SyntaxTokId, error) {
-	return SyntaxTokId{getString(tokId), StdSyntaxSymbol{}}, nil
-}
-
-func NewTokIdFromString(str string) SyntaxTokId {
-	return SyntaxTokId{str, StdSyntaxSymbol{}}
+	return SyntaxTokId(string(tokId.(*token.Token).Lit)), nil
 }
 
 func (this SyntaxTokId) SymbolString() string {
-	return this.string
+	return string(this)
 }
 
 func (this SyntaxTokId) String() string {
-	return this.string
-}
-
-func (this SyntaxTokId) SymbolName() string {
-	return this.string
-}
-
-func (this SyntaxTokId) IsTerminal() bool {
-	return true
+	return string(this)
 }

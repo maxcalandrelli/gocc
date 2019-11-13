@@ -14,29 +14,14 @@
 
 package ast
 
-import (
-	"github.com/maxcalandrelli/gocc/internal/config"
-)
+type SyntaxError int
 
-type SyntaxError struct {
-	string
-	StdSyntaxSymbol
-}
-
-var ErrorSymbol = SyntaxError{config.SYMBOL_ERROR, StdSyntaxSymbol{}}
+const errorConst = SyntaxError(-1)
 
 func (SyntaxError) SymbolString() string {
-	return ErrorSymbol.string
+	return "error"
 }
 
 func (SyntaxError) String() string {
-	return ErrorSymbol.string
-}
-
-func (SyntaxError) IsError() bool { return true }
-
-func (SyntaxError) IsTerminal() bool { return true }
-
-func (SyntaxError) SymbolName() string {
-	return config.INTERNAL_SYMBOL_ERROR
+	return "error"
 }

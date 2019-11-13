@@ -19,27 +19,17 @@ import (
 )
 
 type LexCharRange struct {
-	From   *LexCharLit
-	To     *LexCharLit
-	s      string
-	Negate bool
+	From *LexCharLit
+	To   *LexCharLit
+	s    string
 }
 
 func NewLexCharRange(from, to interface{}) (*LexCharRange, error) {
-	return NewLexCharRangeExt(from, to, false)
-}
-
-func NewLexCharRangeExt(from, to interface{}, negate bool) (*LexCharRange, error) {
 	cr := &LexCharRange{
-		From:   newLexCharLit(from, negate),
-		To:     newLexCharLit(to, negate),
-		Negate: negate,
+		From: newLexCharLit(from),
+		To:   newLexCharLit(to),
 	}
-	if cr.From.Val > cr.To.Val {
-		t := cr.From
-		cr.From = cr.To
-		cr.To = t
-	}
+
 	return cr, nil
 }
 

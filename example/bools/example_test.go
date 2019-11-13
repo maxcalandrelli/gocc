@@ -17,13 +17,14 @@ package example
 import (
 	"testing"
 
-	"github.com/maxcalandrelli/gocc/example/bools/ast"
-	"github.com/maxcalandrelli/gocc/example/bools/bools.grammar/bools"
+	"github.com/goccmack/gocc/example/bools/ast"
+	"github.com/goccmack/gocc/example/bools/lexer"
+	"github.com/goccmack/gocc/example/bools/parser"
 )
 
 func testEval(t *testing.T, exampleStr string, output bool) {
-	lex := bools.NewLexerString(exampleStr)
-	p := bools.NewParser()
+	lex := lexer.NewLexer([]byte(exampleStr))
+	p := parser.NewParser()
 	st, err := p.Parse(lex)
 	if err != nil {
 		panic(err)

@@ -19,53 +19,47 @@ import (
 	"path"
 	"text/template"
 
-	"github.com/maxcalandrelli/gocc/internal/io"
-	"github.com/maxcalandrelli/gocc/internal/lexer/items"
-	"github.com/maxcalandrelli/gocc/internal/token"
+	"github.com/goccmack/gocc/internal/io"
+	"github.com/goccmack/gocc/internal/lexer/items"
+	"github.com/goccmack/gocc/internal/token"
 )
 
-func genActionTable(pkg, outDir string, itemsets *items.ItemSets, tokMap *token.TokenMap, subpath string) {
-	fname := path.Join(outDir, subpath, "lexer", "acttab.go")
+func genActionTable(pkg, outDir string, itemsets *items.ItemSets, tokMap *token.TokenMap) {
+	fname := path.Join(outDir, "lexer", "acttab.go")
 	tmpl, err := template.New("action table").Parse(actionTableSrc[1:])
 	if err != nil {
 		panic(err)
 	}
 	wr := new(bytes.Buffer)
-	if err := tmpl.Execute(wr, getActTab(pkg, subpath, itemsets, tokMap)); err != nil {
+	if err := tmpl.Execute(wr, getActTab(pkg, itemsets, tokMap)); err != nil {
 		panic(err)
 	}
 	io.WriteFile(fname, wr.Bytes())
 }
 
-func getActTab(pkg, subpath string, itemsets *items.ItemSets, tokMap *token.TokenMap) *actTab {
+func getActTab(pkg string, itemsets *items.ItemSets, tokMap *token.TokenMap) *actTab {
 	actab := &actTab{
-		TokenImport: path.Join(pkg, subpath, "token"),
-		Actions:     make([]actTabEntry, itemsets.Size()),
+		TokenImport: path.Join(pkg, "token"),
+		Actions:     make([]action, itemsets.Size()),
 	}
 	for sno, set := range itemsets.List() {
 		if act := set.Action(); act != nil {
 			switch act1 := act.(type) {
 			case items.Accept:
-				actab.Actions[sno].Symbol = act1.String()
-				actab.Actions[sno].Action.Accept = tokMap.IdMap[string(act1)]
-				actab.Actions[sno].Action.Ignore = ""
+				actab.Actions[sno].Accept = tokMap.IdMap[string(act1)]
+				actab.Actions[sno].Ignore = ""
 			case items.Ignore:
-				actab.Actions[sno].Symbol = act1.String()
-				actab.Actions[sno].Action.Accept = -1
-				actab.Actions[sno].Action.Ignore = string(act1)
+				actab.Actions[sno].Accept = -1
+				actab.Actions[sno].Ignore = string(act1)
 			}
 		}
 	}
 	return actab
 }
 
-type actTabEntry struct {
-	Action action
-	Symbol string
-}
 type actTab struct {
 	TokenImport string
-	Actions     []actTabEntry
+	Actions     []action
 }
 
 type action struct {
@@ -97,9 +91,9 @@ func (a ActionRow) String() string {
 
 var ActTab = ActionTable{
 	{{- range $s, $act := .Actions}}
-	ActionRow{ // S{{$s}}, {{$act.Symbol}}
-		Accept: {{$act.Action.Accept}},
-		Ignore: "{{$act.Action.Ignore}}",
+	ActionRow{ // S{{$s}}
+		Accept: {{$act.Accept}},
+		Ignore: "{{$act.Ignore}}",
 	},
 	{{- end}}
 }

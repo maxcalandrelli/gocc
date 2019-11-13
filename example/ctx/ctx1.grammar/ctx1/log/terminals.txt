@@ -1,4 +1,0 @@
-ά<INVALID>
-Ω<EOF>
-id
-μ<calc_0>

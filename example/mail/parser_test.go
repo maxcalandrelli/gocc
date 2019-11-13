@@ -2,7 +2,9 @@ package mail
 
 import (
 	"testing"
-	"github.com/maxcalandrelli/gocc/example/mail/mail.grammar/mail"
+
+	"github.com/goccmack/gocc/example/mail/lexer"
+	"github.com/goccmack/gocc/example/mail/token"
 )
 
 var testData1 = map[string]bool{
@@ -14,14 +16,14 @@ var testData1 = map[string]bool{
 
 func Test1(t *testing.T) {
 	for input, ok := range testData1 {
-		l := mail.NewLexerString(input)
+		l := lexer.NewLexer([]byte(input))
 		tok := l.Scan()
 		switch {
-		case tok.Type == mail.INVALID:
+		case tok.Type == token.INVALID:
 			if ok {
 				t.Errorf("%s", input)
 			}
-		case tok.Type == mail.GetTokenMap().Type("addrspec"):
+		case tok.Type == token.TokMap.Type("addrspec"):
 			if !ok {
 				t.Errorf("%s", input)
 			}
@@ -44,9 +46,9 @@ var testData2 = `
 `
 
 func Test2(t *testing.T) {
-	l := mail.NewLexerString(testData2)
+	l := lexer.NewLexer([]byte(testData2))
 	num := 0
-	for tok := l.Scan(); tok.Type == mail.GetTokenMap().Type("addrspec"); tok = l.Scan() {
+	for tok := l.Scan(); tok.Type == token.TokMap.Type("addrspec"); tok = l.Scan() {
 		if string(tok.Lit) != checkData2[num] {
 			t.Errorf("%s != %s", string(tok.Lit), checkData2[num])
 		}

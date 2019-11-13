@@ -17,7 +17,7 @@ package items
 import (
 	"fmt"
 
-	"github.com/maxcalandrelli/gocc/internal/util"
+	"github.com/goccmack/gocc/internal/util"
 )
 
 type CharRange struct {

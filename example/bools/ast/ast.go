@@ -18,7 +18,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/maxcalandrelli/gocc/example/bools/bools.grammar/bools/iface"
+	"github.com/goccmack/gocc/example/bools/token"
+	"github.com/goccmack/gocc/example/bools/util"
 )
 
 type Attrib interface{}
@@ -102,17 +103,12 @@ type LessThanExpr struct {
 	B int64
 }
 
-func IntValue(lit []byte) (int64, error) {
-	return strconv.ParseInt(string(lit), 10, 64)
-}
-
-
 func NewLessThanExpr(a, b Attrib) (*LessThanExpr, error) {
-	aint, err := IntValue(a.(*iface.Token).Lit)
+	aint, err := util.IntValue(a.(*token.Token).Lit)
 	if err != nil {
 		return nil, err
 	}
-	bint, err := IntValue(b.(*iface.Token).Lit)
+	bint, err := util.IntValue(b.(*token.Token).Lit)
 	if err != nil {
 		return nil, err
 	}
@@ -133,11 +129,11 @@ type SubStringExpr struct {
 }
 
 func NewSubStringExpr(a, b Attrib) (*SubStringExpr, error) {
-	astr, err := strconv.Unquote(string(a.(*iface.Token).Lit))
+	astr, err := strconv.Unquote(string(a.(*token.Token).Lit))
 	if err != nil {
 		return nil, err
 	}
-	bstr, err := strconv.Unquote(string(b.(*iface.Token).Lit))
+	bstr, err := strconv.Unquote(string(b.(*token.Token).Lit))
 	if err != nil {
 		return nil, err
 	}

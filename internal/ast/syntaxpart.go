@@ -35,9 +35,9 @@ func NewSyntaxPart(header, prodList interface{}) (*SyntaxPart, error) {
 
 func (this *SyntaxPart) augment() *SyntaxPart {
 	startProd := &SyntaxProd{
-		Id: SyntaxProdId{"S'", StdSyntaxSymbol{}},
+		Id: "S'",
 		Body: &SyntaxBody{
-			Symbols: SyntaxSymbols{SyntaxProdId{this.ProdList[0].Id.SymbolString(), StdSyntaxSymbol{}}},
+			Symbols: []SyntaxSymbol{SyntaxProdId(this.ProdList[0].Id)},
 		},
 	}
 	newProdList := SyntaxProdList{startProd}

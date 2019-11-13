@@ -14,29 +14,14 @@
 
 package ast
 
-import (
-	"github.com/maxcalandrelli/gocc/internal/config"
-)
+type SyntaxEof int
 
-type SyntaxEof struct {
-	string
-	StdSyntaxSymbol
-}
+var EOF SyntaxEof = 0
 
-var EofSymbol = SyntaxEof{config.SYMBOL_EOF, StdSyntaxSymbol{}}
-
-func (SyntaxEof) SymbolString() string {
-	return EofSymbol.string
+func (SyntaxEof) SymbolsString() string {
+	return "$"
 }
 
 func (SyntaxEof) String() string {
-	return EofSymbol.string
-}
-
-func (SyntaxEof) SymbolName() string {
-	return config.INTERNAL_SYMBOL_EOF
-}
-
-func (SyntaxEof) IsTerminal() bool {
-	return true
+	return "$"
 }

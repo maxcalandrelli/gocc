@@ -18,8 +18,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/maxcalandrelli/gocc/internal/ast"
-	"github.com/maxcalandrelli/gocc/internal/lexer/symbols"
+	"github.com/goccmack/gocc/internal/ast"
+	"github.com/goccmack/gocc/internal/lexer/symbols"
 )
 
 /*
@@ -39,9 +39,6 @@ type ItemSet struct {
 }
 
 func NewItemSet(setNo int, lexPart *ast.LexPart, symbols *symbols.Symbols, items ItemList) *ItemSet {
-	if debug_deeply {
-		trace(setNo, "creating, start items:\n%s", items)
-	}
 	set := &ItemSet{
 		setNo:         setNo,
 		Items:         items.Closure(lexPart, symbols),
@@ -49,11 +46,8 @@ func NewItemSet(setNo int, lexPart *ast.LexPart, symbols *symbols.Symbols, items
 		Symbols:       symbols,
 		DotTransition: -1,
 	}
-	set.getSymbolClasses(lexPart, symbols)
+	set.getSymbolClasses()
 	set.newTransitions()
-	if debug_deeply {
-		trace(setNo, "created, items:\n%s\nsymbol classes:\n%s", set.Items, set.SymbolClasses)
-	}
 	return set
 }
 
@@ -114,34 +108,12 @@ func (this *ItemSet) Empty() bool {
 	return len(this.Items) == 0
 }
 
-func (this *ItemSet) getSymbolClasses(lexPart *ast.LexPart, symbols *symbols.Symbols) {
+func (this *ItemSet) getSymbolClasses() {
 	this.SymbolClasses = NewDisjunctRangeSet()
 	for _, item := range this.Items {
 		if !item.Reduce() {
-			this.addToSymbolClasses(lexPart, symbols, item.ExpectedSymbol(), false)
+			this.SymbolClasses.AddLexTNode(item.ExpectedSymbol())
 		}
-	}
-	for _, item := range this.Items {
-		if !item.Reduce() {
-			this.addToSymbolClasses(lexPart, symbols, item.ExpectedSymbol(), true)
-		}
-	}
-
-}
-
-func (this *ItemSet) addToSymbolClasses(lexPart *ast.LexPart, symbols *symbols.Symbols, node ast.LexNode, negated bool) {
-	addNow := !negated
-	tNode := ast.LexTNode(nil)
-	switch n := node.(type) {
-	case *ast.LexCharLit:
-		addNow = (negated == n.Negate)
-		tNode = node.(ast.LexTNode)
-	case *ast.LexCharRange:
-		addNow = (negated == n.Negate)
-		tNode = node.(ast.LexTNode)
-	}
-	if addNow && tNode != nil {
-		this.SymbolClasses.AddLexTNode(tNode)
 	}
 }
 
@@ -160,7 +132,7 @@ func (this *ItemSet) newTransitions() {
 See algorithm: set.Next() in package doc
 */
 func (this *ItemSet) Next(rng CharRange) ItemList {
-	trace(this.setNo, "rng=%q\n", rng)
+	// fmt.Printf("S%d%s\n", this.setNo, this)
 	nextItems := NewItemList(16)
 	for _, item := range this.Items {
 		nextItems = nextItems.AddNoDuplicate(item.Move(rng)...)
@@ -191,19 +163,18 @@ func (this *ItemSet) dependentsClosure(items ItemList) ItemList {
 	if len(items) == 0 {
 		return items
 	}
-	//trace(this.setNo, "dependentsClosure\n    actual: %s\n    items: %s\n", util.EscapedString(this.String()).Unescape(), util.EscapedString(fmt.Sprintf("%q", items)).Unescape())
-	trace(this.setNo, "dependentsClosure\n")
+	// fmt.Printf("dependentsClosure S%d, %s\n", this.setNo, items)
 	for i := 0; i < len(items); i++ {
 		for _, thisItem := range this.Items {
 			if expSym := thisItem.ExpectedSymbol(); expSym != nil && expSym.String() == items[i].Id {
 				if items[i].Reduce() {
-					mv := thisItem.MoveRegDefId(items[i].Id)
-					for _, mvi := range mv {
-						dbg(this.setNo, "  ====> %s\n", mvi)
-					}
+					// mv := thisItem.MoveRegDefId(items[i].Id)
+					// for _, mvi := range mv {
+					// 	fmt.Printf("\t%s\n", mvi)
+					// }
 					items = items.AddNoDuplicate(thisItem.MoveRegDefId(items[i].Id)...)
 				} else {
-					dbg(this.setNo, "  ==>   %s\n", thisItem)
+					// fmt.Printf("\t%s\n", thisItem)
 					items = items.AddNoDuplicate(thisItem)
 				}
 			}

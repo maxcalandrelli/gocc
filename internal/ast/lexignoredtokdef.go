@@ -17,6 +17,8 @@ package ast
 import (
 	"fmt"
 	"strings"
+
+	"github.com/goccmack/gocc/internal/frontend/token"
 )
 
 type LexIgnoredTokDef struct {
@@ -26,7 +28,7 @@ type LexIgnoredTokDef struct {
 
 func NewLexIgnoredTokDef(tokId, lexPattern interface{}) (*LexIgnoredTokDef, error) {
 	tokDef := &LexIgnoredTokDef{
-		id:      getString(tokId),
+		id:      string(tokId.(*token.Token).Lit),
 		pattern: lexPattern.(*LexPattern),
 	}
 	return tokDef, nil

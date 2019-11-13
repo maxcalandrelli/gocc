@@ -14,27 +14,14 @@
 
 package ast
 
-import (
-	"github.com/maxcalandrelli/gocc/internal/config"
-)
+type SyntaxEmpty int
 
-type SyntaxEmpty struct {
-	string
-	StdSyntaxSymbol
-}
-
-var EmptySymbol = SyntaxEmpty{config.SYMBOL_EMPTY, StdSyntaxSymbol{}}
+const EMPTY SyntaxEmpty = 0
 
 func (SyntaxEmpty) SymbolString() string {
-	return EmptySymbol.string
+	return "empty"
 }
 
 func (SyntaxEmpty) String() string {
-	return EmptySymbol.string
-}
-
-func (SyntaxEmpty) IsEpsilon() bool { return true }
-
-func (SyntaxEmpty) SymbolName() string {
-	return config.INTERNAL_SYMBOL_EMPTY
+	return "empty"
 }

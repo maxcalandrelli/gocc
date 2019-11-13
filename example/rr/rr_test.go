@@ -18,12 +18,13 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/maxcalandrelli/gocc/example/rr/rr.grammar/rr"
+	"github.com/goccmack/gocc/example/rr/lexer"
+	"github.com/goccmack/gocc/example/rr/parser"
 )
 
 func parse(src string) (ast string, err error) {
-	l := rr.NewLexerString(src)
-	p := rr.NewParser()
+	l := lexer.NewLexer([]byte(src))
+	p := parser.NewParser()
 	res, err := p.Parse(l)
 	if err == nil {
 		ast = res.(string)

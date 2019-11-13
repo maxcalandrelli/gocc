@@ -15,7 +15,7 @@
 package symbols
 
 import (
-	"github.com/maxcalandrelli/gocc/internal/ast"
+	"github.com/goccmack/gocc/internal/ast"
 )
 
 // key: string of symbols - string(ast.CharLit.Lit). E.g.: "'a'"

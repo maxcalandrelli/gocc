@@ -15,41 +15,20 @@
 package ast
 
 import (
-	"fmt"
-
-	"github.com/maxcalandrelli/gocc/internal/config"
+	"github.com/goccmack/gocc/internal/frontend/token"
 )
 
 // Id or name of a grammar(syntax) production
-type SyntaxProdId struct {
-	string
-	StdSyntaxSymbol
-}
+type SyntaxProdId string
 
 func NewSyntaxProdId(tok interface{}) (SyntaxProdId, error) {
-	return SyntaxProdId{getString(tok), StdSyntaxSymbol{}}, nil
-}
-
-func NewSyntaxProdIdFromString(str string) SyntaxProdId {
-	return SyntaxProdId{str, StdSyntaxSymbol{}}
+	return SyntaxProdId(string(tok.(*token.Token).Lit)), nil
 }
 
 func (this SyntaxProdId) SymbolString() string {
-	return this.string
+	return string(this)
 }
 
 func (this SyntaxProdId) String() string {
-	return this.string
-}
-
-func (this SyntaxProdId) SymbolName() string {
-	return fmt.Sprintf("%s<%s>", config.INTERNAL_SYMBOL_PROD, this.string)
-}
-
-func (this SyntaxProdId) IsTerminal() bool {
-	return false
-}
-
-func (this SyntaxProdId) IsNonTerminal() bool {
-	return true
+	return string(this)
 }

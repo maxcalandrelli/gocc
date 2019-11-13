@@ -17,6 +17,8 @@ package ast
 import (
 	"fmt"
 	"strings"
+
+	"github.com/goccmack/gocc/internal/frontend/token"
 )
 
 type LexRegDef struct {
@@ -26,7 +28,7 @@ type LexRegDef struct {
 
 func NewLexRegDef(regDefId, lexPattern interface{}) (*LexRegDef, error) {
 	regDef := &LexRegDef{
-		id:      getString(regDefId),
+		id:      string(regDefId.(*token.Token).Lit),
 		pattern: lexPattern.(*LexPattern),
 	}
 	return regDef, nil
